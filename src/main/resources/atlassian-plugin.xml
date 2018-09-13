@@ -1,24 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-    </plugin-info>
-
-    <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="jira-report-plugin"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="jira-report-plugin-resources" name="jira-report-plugin Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="jira-report-plugin.css" location="/css/jira-report-plugin.css"/>
-        <resource type="download" name="jira-report-plugin.js" location="/js/jira-report-plugin.js"/>
-        <resource type="download" name="images/" location="/images"/>
-
-        <context>jira-report-plugin</context>
-    </web-resource>
-    
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="jira-report-plugin"/>
+  <!-- add our web resources -->
+  <web-resource key="jira-report-plugin-resources" name="jira-report-plugin Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="jira-report-plugin.css" location="/css/jira-report-plugin.css"/>
+    <resource type="download" name="jira-report-plugin.js" location="/js/jira-report-plugin.js"/>
+    <resource type="download" name="images/" location="/images"/>
+    <context>jira-report-plugin</context>
+  </web-resource>
+  <report name="Issue Date Filter Report" i18n-name-key="issue-date-filter-report.name" key="issue-date-filter-report" class="com.atlassian.plugins.tutorial.jira.reports.IssueDateFilterReport">
+    <description key="issue-date-filter-report.description">The Issue Date Filter Report Plugin</description>
+    <resource name="view" type="velocity" location="/templates/reports/issue-date-filter-report/view.vm"/>
+    <resource name="i18n" type="i18n" location="IssueDateFilterReport"/>
+    <label key="issue-date-filter-report.label"></label>
+    <properties>
+      <property>
+        <key>dueDate</key>
+        <name>report.issuedatefilterreport.duedate</name>
+        <description>report.issuedatefilterreport.duedate.description</description>
+        <type>date</type>
+      </property>
+    </properties>
+    <!-- the properties of this report which the user must select before running it -->
+    <!-- Uncomment and edit properties...
+    <properties>
+        <property>
+            <key>versionId</key>
+            <name>common.concepts.version</name>
+            <description>report.timetracking.version.description</description>
+            <type>select</type>
+            <values class="com.atlassian.jira.portal.VersionOptionalValuesGenerator"/>
+        </property>
+        <property>
+            <key>sortingOrder</key>
+            <name>report.timetracking.sortingorder</name>
+            <description>report.timetracking.sortingorder.description</description>
+            <type>select</type>
+            <values class="com.atlassian.jira.portal.SortingValuesGenerator"/>
+        </property>
+    </properties>
+    -->
+  </report>
 </atlassian-plugin>

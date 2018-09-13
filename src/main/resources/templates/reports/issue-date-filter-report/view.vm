@@ -1,0 +1,32 @@
+<div style="padding: 5px">
+    <!-- Display the report configuration -->
+    <h4 id="creation-report-parameters">
+        $i18n.getText('report.issuedatefilterreport.duedate'): $dueDate
+    </h4>
+    <br/>
+    <table style="width: 100%; border: 0; background-color: lightgrey">
+        <tr>
+            <td>id</td>
+            <td>summary</td>
+            <td>due date</td>
+            <td>assignee</td>
+        </tr>
+        #foreach($issue in $issues)
+            <tr>
+                <td>
+                    $issue.IssueTypeId
+                </td>
+                <td>
+                    $issue.Summary
+                </td>
+                <td>
+                    $issue.DueDate
+                </td>
+                <td>
+                    #if( $issue.Assignee.DisplayName.length() > 0 )
+                        $issue.Assignee.DisplayName
+                    #end
+                </td>
+            </tr>
+        #end
+</div>
