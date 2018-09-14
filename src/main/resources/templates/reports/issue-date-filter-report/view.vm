@@ -23,7 +23,7 @@
                     $issue.DueDate
                 </td>
                 <td>
-                    #if( $issue.Assignee.DisplayName.length() > 0 )
+                    #if($issue.Assignee.DisplayName)
                         $issue.Assignee.DisplayName
                     #end
                 </td>
