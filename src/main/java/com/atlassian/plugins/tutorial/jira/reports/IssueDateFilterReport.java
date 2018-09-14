@@ -1,6 +1,7 @@
 package com.atlassian.plugins.tutorial.jira.reports;
 
 import com.atlassian.jira.bc.issue.search.SearchService;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.datetime.DateTimeStyle;
@@ -8,7 +9,11 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.search.SearchException;
 import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.plugin.report.impl.AbstractReport;
+import com.atlassian.jira.project.Project;
+import com.atlassian.jira.security.Permissions;
+import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.user.UserProjectHistoryManager;
 import com.atlassian.jira.util.ParameterUtils;
 import com.atlassian.jira.web.action.ProjectActionSupport;
 import com.atlassian.jira.web.bean.PagerFilter;
@@ -26,12 +31,22 @@ public class IssueDateFilterReport extends AbstractReport {
     private final SearchService searchService;
     @JiraImport
     private final DateTimeFormatter formatter;
+    @JiraImport
+    private final ProjectRoleManager projectRoleManager;
 
     private Date dueDate;
 
-    public IssueDateFilterReport(SearchService searchService,  @JiraImport DateTimeFormatterFactory dateTimeFormatterFactory) {
+    public IssueDateFilterReport(SearchService searchService, @JiraImport DateTimeFormatterFactory dateTimeFormatterFactory, ProjectRoleManager projectRoleManager) {
         this.searchService = searchService;
         this.formatter = dateTimeFormatterFactory.formatter().withStyle(DateTimeStyle.DATE).forLoggedInUser();
+        this.projectRoleManager = projectRoleManager;
+    }
+
+    public boolean showReport() {
+        UserProjectHistoryManager userProjectHistoryManager =  ComponentAccessor.getOSGiComponentInstanceOfType(UserProjectHistoryManager.class);
+        Project project = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser());
+        return projectRoleManager.getProjectRoles(ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser(), project)
+                .stream().filter(projectRole -> projectRole.getName().equalsIgnoreCase("PROJECT-MANAGER")).map(r -> true).findFirst().orElse(false);
     }
 
     public String generateReportHtml(ProjectActionSupport action, Map params) throws SearchException {
