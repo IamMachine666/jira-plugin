@@ -45,8 +45,8 @@ public class IssueDateFilterReport extends AbstractReport {
     public boolean showReport() {
         UserProjectHistoryManager userProjectHistoryManager =  ComponentAccessor.getOSGiComponentInstanceOfType(UserProjectHistoryManager.class);
         Project project = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser());
-        return projectRoleManager.getProjectRoles(ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser(), project)
-                .stream().filter(projectRole -> projectRole.getName().equalsIgnoreCase("PROJECT-MANAGER")).map(r -> true).findFirst().orElse(false);
+        return projectRoleManager
+                .isUserInProjectRole(ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser(), projectRoleManager.getProjectRole("Project-manager"), project);
     }
 
     public String generateReportHtml(ProjectActionSupport action, Map params) throws SearchException {
@@ -64,7 +64,7 @@ public class IssueDateFilterReport extends AbstractReport {
     public void validate(ProjectActionSupport action, Map params) {
         try {
             if (ParameterUtils.getStringParam(params, "dueDate").isEmpty()) {
-                //not working without date truncate
+                //Query above is not working without date truncate
                 dueDate = DateUtils.truncate(new Date(), Calendar.DATE);
             } else {
                 dueDate = formatter.parse(ParameterUtils.getStringParam(params, "dueDate"));
