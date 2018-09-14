@@ -26,6 +26,7 @@ import java.util.*;
 
 @Scanned
 public class IssueDateFilterReport extends AbstractReport {
+    private static String SHOW_REPORT_TO_ROLE = "Project-manager";
 
     @JiraImport
     private final SearchService searchService;
@@ -46,7 +47,7 @@ public class IssueDateFilterReport extends AbstractReport {
         UserProjectHistoryManager userProjectHistoryManager =  ComponentAccessor.getOSGiComponentInstanceOfType(UserProjectHistoryManager.class);
         Project project = userProjectHistoryManager.getCurrentProject(Permissions.BROWSE, ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser());
         return projectRoleManager
-                .isUserInProjectRole(ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser(), projectRoleManager.getProjectRole("Project-manager"), project);
+                .isUserInProjectRole(ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser(), projectRoleManager.getProjectRole(SHOW_REPORT_TO_ROLE), project);
     }
 
     public String generateReportHtml(ProjectActionSupport action, Map params) throws SearchException {
